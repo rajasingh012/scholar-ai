@@ -1,0 +1,38 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <!-- Dark navy circular background -->
+  <path
+      android:fillColor="#1A237E"
+      android:pathData="M54,54m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0"/>
+  <!-- Open book - white -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M30,55 L54,64 L78,55 L78,75 L54,66 L30,75 Z"/>
+  <!-- Book spine - slightly dimmer white -->
+  <path
+      android:fillColor="#E8EAF6"
+      android:pathData="M54,64 L54,66"/>
+  <!-- Question mark - amber, floats above the book -->
+  <path
+      android:fillColor="#FFA000"
+      android:pathData="M54,30
+               C54,30 54,30 54,30
+               C57,30 59,32 59,35
+               C59,37.5 57.5,39 55.5,40
+               L55.5,43
+               L53.5,43
+               L53.5,40
+               C51.5,39 50,37.5 50,35
+               C50,32 52,30 54,30 Z"/>
+  <!-- Question mark dot - amber -->
+  <path
+      android:fillColor="#FFA000"
+      android:pathData="M54,46
+               C55.1,46 56,46.9 56,48
+               C56,49.1 55.1,50 54,50
+               C52.9,50 52,49.1 52,48
+               C52,46.9 52.9,46 54,46 Z"/>
+</vector>
