@@ -1,81 +1,85 @@
 
-<h1 align="center">LM Playground</h1>
+<h1 align="center">Scholar</h1>
 
 <p align="center">
-<img src="art/logo.png"/>
+Offline AI Socratic Science Tutor — Gemma 4 + Unsloth + llama.cpp
 </p>
 
-LM Playground is an Android application for running Large Language Models locally on-device. Download models, load them in one tap, and chat - all offline, all private. Powered by [llama.cpp](https://github.com/ggml-org/llama.cpp) with GGUF-format models from [Hugging Face](https://huggingface.co/).
+<p align="center">
+<a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon/"><img src="https://img.shields.io/badge/Kaggle-Gemma%204%20Good%20Hackathon-blue?style=flat-square"</img></a>
+<a href="https://github.com/rajasingh012/scholar-ai"><img src="https://img.shields.io/badge/Platform-Future%20of%20Education-green?style=flat-square"</img></a>
+</p>
 
-![preview](art/Preview.png)
+Scholar is a mobile app that brings an AI science tutor to students in areas with poor or no internet. Built for Class 6–8 NCERT Science, it runs entirely on-device — no server, no API, no internet required after model download.
 
-## Features
+## How It Works
 
-- **On-device inference** - no cloud, no API keys, fully offline
-- **Rich markdown** in chat responses - headers, code blocks, lists, and more
-- **Reasoning model support** - thinking steps from models like DeepSeek R1 and Nemotron are displayed in a styled section
-- **Reliable background downloads** - custom download engine with OkHttp and WorkManager, progress notifications with speed and ETA, automatic resume on network interruptions
-- **Storage management** - choose where to keep multi-GB model files with Android's Storage Access Framework
-- **ARM optimized** - KleidiAI kernels and OpenMP for faster generation on arm64 devices
+```
+NCERT PDFs ──► Dialogue Generator (MiniMax M2.7) ──► JSONL
+                                               ──► Kaggle GPU (Unsloth QLoRA) ──► GGUF Q4_K_M
+                                                                                          │
+                                                                                          ▼
+                                                                                   Android App (llama.cpp)
+```
 
-## Supported Models
+No server. No RAG. Works completely offline.
 
-| Family | Sizes | Provider |
-|--------|-------|----------|
-| Qwen 3.5 | 0.8B, 2B, 4B | Alibaba |
-| Qwen 3 | 0.6B, 1.7B, 4B | Alibaba |
-| Gemma 3n | E2B, E4B | Google |
-| Gemma 3 | 1B, 4B | Google |
-| Nemotron 3 Nano | 4B | NVIDIA |
-| Granite 4.0 | Micro, H-Tiny | IBM |
-| DeepSeek R1 Distill | 1.5B, 7B | DeepSeek |
-| Phi-4 mini | 3.8B | Microsoft |
-| LFM2.5 Thinking | 1.2B | Liquid AI |
-| Ministral 3 | 3B, 8B (Instruct & Reasoning) | Mistral |
-| Llama 3.2 | 1B, 3B | Meta |
-| Llama 3.1 | 8B | Meta |
+## Key Features
 
-<details>
-<summary>Legacy models</summary>
+- **On-device inference** — Gemma 4 E2B runs locally via llama.cpp, no cloud needed
+- **Socratic teaching** — tutor asks guiding questions so students discover answers themselves
+- **Quick Revision** — structured explanations + test questions for exam prep
+- **Fully offline** — after downloading the ~3.4 GB GGUF model, works without internet
+- **Unsloth fine-tuning** — QLoRA on Kaggle T4 GPU (46 min training, 0.69 eval loss)
 
-| Family | Sizes | Provider |
-|--------|-------|----------|
-| Qwen 2.5 | 0.5B, 1.5B | Alibaba |
-| Phi 3.5 mini | 3.8B | Microsoft |
-| Mistral v0.3 | 7B | Mistral |
-| Gemma 2 | 9B | Google |
+## Stack
 
-</details>
+| Layer | Technology |
+|-------|-----------|
+| Base Model | [unsloth/gemma-4-E2B-it-unsloth-bnb-4bit](https://huggingface.co/unsloth/gemma-4-E2B-it-unsloth-bnb-4bit) |
+| Fine-tuning | Unsloth QLoRA (4-bit) on Kaggle T4 GPU |
+| Quantization | GGUF Q4_K_M (~3.4 GB) |
+| On-device inference | [llama.cpp](https://github.com/ggml-org/llama.cpp) |
+| Mobile | Android (Kotlin + Jetpack Compose) |
+| Fine-tuned model | [rajasingh012/vidya-gemma4-e2b-gguf](https://huggingface.co/rajasingh012/vidya-gemma4-e2b-gguf) |
 
-Most models use Q4_K_M quantization; Qwen 3.5 uses Q3_K_M. See [`ModelInfoProvider.kt`](app/src/main/java/com/druk/lmplayground/models/ModelInfoProvider.kt) for the full list.
+## Training Data
 
-## Install
+- **649 Socratic dialogues** generated from NCERT Class 6–8 Science textbooks
+- Dialogue types: Socratic (60%) + Quick Revision (40%)
+- Generated using MiniMax M2.7 API from 111 NCERT PDF chapters
+- Dataset: [rajasinghg/ncert-vidya-socratic-dialogues](https://www.kaggle.com/datasets/rajasinghg/ncert-vidya-socratic-dialogues)
 
-If you're just looking to install LM Playground, you can find it on [Google Play](https://play.google.com/store/apps/details?id=com.druk.lmplayground). If you're a developer wanting to contribute, read on.
+## Kaggle Notebooks
+
+| Kernel | Purpose |
+|--------|---------|
+| [vidya-fine-tune-gguf-gpu-gemma-4-e2b-qlora](https://www.kaggle.com/code/rajasinghg/vidya-fine-tune-gguf-gpu-gemma-4-e2b-qlora) | Training — fine-tune + GGUF export + HF upload |
+| [vidya-infer-v2-gemma-4-e2b-lora-inference](https://www.kaggle.com/code/rajasinghg/vidya-infer-v2-gemma-4-e2b-lora-inference) | Inference — quality testing |
 
 ## Build Instructions
 
 Prerequisites:
-* Android Studio [2024.3.1+](https://developer.android.com/studio/releases)
+* Android Studio 2024.3.1+
 * NDK 27.2.12479018
 * CMake 3.31.6
 
-1. Clone the repository with submodules:
+```bash
+git clone https://github.com/rajasingh012/scholar-ai.git
+cd scholar-ai
+git submodule update --init --recursive   # pull llama.cpp
 ```
-git clone --recurse-submodules https://github.com/andriydruk/LMPlayground.git
-```
-2. Open the project in Android Studio: `File` > `Open` > Select the cloned repository.
-3. Connect an Android device or start an emulator.
-4. Run the application using `Run` > `Run 'app'` or the play button in Android Studio.
+
+Open in Android Studio: `File` > `Open` > select the cloned repo, then run on device or emulator.
+
+## Kaggle Hackathon
+
+Submitted to the **Future of Education** track of the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon/).
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT License.
 
 ## Acknowledgments
 
-This project is built on [llama.cpp](https://github.com/ggml-org/llama.cpp). Models are GGUF-format with Q4_K_M quantization sourced from [Hugging Face](https://huggingface.co/).
-
-## Contact
-
-If you have any questions, suggestions, or issues, feel free to open an issue or contact me directly at [me@andriydruk.com](mailto:me@andriydruk.com).
+Built on [llama.cpp](https://github.com/ggml-org/llama.cpp), [Unsloth](https://unsloth.ai/), and [Gemma 4 E2B](https://huggingface.co/unsloth/gemma-4-E2B-it-unsloth-bnb-4bit). Fine-tuning infrastructure powered by Kaggle.
